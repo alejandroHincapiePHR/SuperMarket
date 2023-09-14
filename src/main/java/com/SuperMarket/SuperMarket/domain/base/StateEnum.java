@@ -2,7 +2,7 @@ package com.SuperMarket.SuperMarket.domain.base;
 
 public enum StateEnum {
 
-    ACTIVE(1, "Active"),
+    ACTIVE(1, "ACTIVE"),
     DELETED(2, "DELETED");
 
     private Integer value;
@@ -22,6 +22,11 @@ public enum StateEnum {
     }
 
     public static StateEnum fromValue(Integer value) {
+
+        if(value==null){
+            throw new IllegalArgumentException("A value is needed");
+        }
+
         for (StateEnum stateEnum : StateEnum.values()) {
             if (stateEnum.getValue().equals(value)) {
                 return stateEnum;
@@ -31,8 +36,14 @@ public enum StateEnum {
     }
 
     public static StateEnum fromState(String description) {
+
+        if(description==null){
+            throw new IllegalArgumentException("A description is needed");
+        }
+
+
         for (StateEnum stateEnum : StateEnum.values()) {
-            if (stateEnum.getDescription().equals(description)) {
+            if (stateEnum.getDescription().equals(description.toUpperCase())) {
                 return stateEnum;
             }
         }
