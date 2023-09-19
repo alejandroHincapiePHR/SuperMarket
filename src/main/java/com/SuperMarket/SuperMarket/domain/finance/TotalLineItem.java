@@ -22,10 +22,10 @@ public class TotalLineItem {
         this.totalQuantityProducts = calculateTotalQuantityProducts();
         this.totalTaxes = calculateTotalTaxes();
         this.totalToPay = calculateTotalToPay();
-        this.totalAccumulatedPoints = calcualteTotalAccumulatedPoints();
+        this.totalAccumulatedPoints = calculateTotalAccumulatedPoints();
     }
 
-    private Double calcualteTotalAccumulatedPoints() {
+    private Double calculateTotalAccumulatedPoints() {
         Double reduce = lineItems.stream().map(InvoiceLineItem::getPoints).reduce(0D, Double::sum);
         return reduce;
     }
@@ -55,56 +55,29 @@ public class TotalLineItem {
         return totalQuantityProducts;
     }
 
-    public void setTotalQuantityProducts(Integer totalQuantityProducts) {
-        this.totalQuantityProducts = totalQuantityProducts;
-    }
-
     public Double getTotalDiscount() {
         return totalDiscount;
-    }
-
-    public void setTotalDiscount(Double totalDiscount) {
-        this.totalDiscount = totalDiscount;
     }
 
     public Double getTotalTaxes() {
         return totalTaxes;
     }
 
-    public void setTotalTaxes(Double totalTaxes) {
-        this.totalTaxes = totalTaxes;
-    }
 
     public Double getTotalToPay() {
         return totalToPay;
-    }
-
-    public void setTotalToPay(Double totalToPay) {
-        this.totalToPay = totalToPay;
     }
 
     public Double getTotalAccumulatedPoints() {
         return totalAccumulatedPoints;
     }
 
-    public void setTotalAccumulatedPoints(Double totalAccumulatedPoints) {
-        this.totalAccumulatedPoints = totalAccumulatedPoints;
-    }
-
     public List<InvoiceLineItem> getLineItems() {
         return lineItems;
     }
 
-    public void setLineItems(List<InvoiceLineItem> lineItems) {
-        this.lineItems = lineItems;
-    }
-
     public Boolean getEmployee() {
         return isEmployee;
-    }
-
-    public void setEmployee(Boolean employee) {
-        isEmployee = employee;
     }
 
     @Override
