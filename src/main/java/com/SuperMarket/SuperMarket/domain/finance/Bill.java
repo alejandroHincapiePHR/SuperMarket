@@ -26,14 +26,21 @@ public final class Bill extends Domain {
         this.billNumber = id + 10;
         this.customer = customer;
         this.employee = employee;
-        setIssueDate();
+        this.issueDate = setIssueDate();
         this.lineItems = new ArrayList<>();
     }
 
-    private void setIssueDate() {
+
+    public void confirmBillAndGetTotalLineItem(Boolean isEmployee){
+        totalLineItem = new TotalLineItem(lineItems, isEmployee);
+
+
+    }
+
+    private String setIssueDate() {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        this.issueDate = currentDate.format(dateTimeFormatter);
+        return currentDate.format(dateTimeFormatter);
     }
 
     public static long getCounter() {

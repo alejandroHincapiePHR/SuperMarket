@@ -8,6 +8,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
 public final class InvoiceLineItem {
 
@@ -80,5 +81,71 @@ public final class InvoiceLineItem {
         return pointsPCT;
     }
 
+    public Product getProduct() {
+        return product;
+    }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public Double getTaxes() {
+        return taxes;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public Double getSubtotal() {
+        return subtotal;
+    }
+
+    public Double getPoints() {
+        return points;
+    }
+
+    public Double getTaxesPCT() {
+        return taxesPCT;
+    }
+
+    public Double getPointsPCT() {
+        return pointsPCT;
+    }
+
+    public Double getDiscountPCT() {
+        return discountPCT;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("InvoiceLineItem{");
+        sb.append("product=").append(product);
+        sb.append(", quantity=").append(quantity);
+        sb.append(", taxes=").append(taxes);
+        sb.append(", discount=").append(discount);
+        sb.append(", subtotal=").append(subtotal);
+        sb.append(", points=").append(points);
+        sb.append(", taxesPCT=").append(taxesPCT);
+        sb.append(", pointsPCT=").append(pointsPCT);
+        sb.append(", discountPCT=").append(discountPCT);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof InvoiceLineItem that)) return false;
+        return Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity)
+                && Objects.equals(taxes, that.taxes) && Objects.equals(discount, that.discount)
+                && Objects.equals(subtotal, that.subtotal) && Objects.equals(points, that.points)
+                && Objects.equals(taxesPCT, that.taxesPCT) && Objects.equals(pointsPCT, that.pointsPCT)
+                && Objects.equals(discountPCT, that.discountPCT);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product, quantity, taxes, discount, subtotal, points, taxesPCT, pointsPCT, discountPCT);
+    }
 }
