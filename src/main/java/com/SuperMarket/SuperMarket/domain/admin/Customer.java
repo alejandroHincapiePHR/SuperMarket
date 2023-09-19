@@ -22,7 +22,7 @@ public non-sealed class Customer extends Person {
         super(firstName, lastName, identification, email, telefonNumber);
         this.points = 0;
         this.clientBills = new ArrayList<>();
-        //Todo add logic to know if client is employee
+        this.isEmployee = false;
     }
 
 

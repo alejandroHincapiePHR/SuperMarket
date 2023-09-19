@@ -7,13 +7,8 @@ public abstract class Domain {
     protected Long id;
     protected StateEnum stateEnum;
 
-    public Domain(){
+    public Domain() {
         super();
-    }
-
-    public Domain(Long id) {
-        super();
-        this.id = id;
         this.stateEnum = StateEnum.ACTIVE;
     }
 
@@ -46,7 +41,7 @@ public abstract class Domain {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(this==null) return false;
+        if (this == null) return false;
         if (!(o instanceof Domain domain)) return false;
         return Objects.equals(id, domain.id) && stateEnum == domain.stateEnum;
     }
