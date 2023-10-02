@@ -2,8 +2,8 @@ package com.SuperMarket.SuperMarket.domain.base;
 
 public enum StateEnum {
 
-    ACTIVE(1, "ACTIVE"),
-    DELETED(2, "DELETED");
+    ACTIVE(0, "ACTIVE"),
+    DELETED(1, "DELETED");
 
     private Integer value;
     private String description;

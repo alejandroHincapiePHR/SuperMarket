@@ -1,12 +1,15 @@
 package com.SuperMarket.SuperMarket.domain.finance;
-
-import com.SuperMarket.SuperMarket.domain.product.Product;
+import com.SuperMarket.SuperMarket.domain.exception.DomainRuntimeException;
+import com.SuperMarket.SuperMarket.domain.exception.InvalidResultException;
+import com.SuperMarket.SuperMarket.domain.finance.util.ConfigReader;
 
 import java.util.List;
 import java.util.Objects;
 
-public class TotalLineItem {
+public final class TotalLineItem {
 
+    private static final ConfigReader configReader = new ConfigReader();
+    private Double employeeDiscount;
     private Integer totalQuantityProducts;
     private Double totalDiscount;
     private Double totalTaxes;
@@ -17,37 +20,81 @@ public class TotalLineItem {
 
 
     public TotalLineItem(List<InvoiceLineItem> lineItems, Boolean isEmployee) {
+        validArgumentCheck(lineItems, isEmployee);
         this.lineItems = lineItems;
         this.isEmployee = isEmployee;
+        this.employeeDiscount = getEmployeeDiscountFromFile();
         this.totalQuantityProducts = calculateTotalQuantityProducts();
         this.totalTaxes = calculateTotalTaxes();
         this.totalToPay = calculateTotalToPay();
         this.totalAccumulatedPoints = calculateTotalAccumulatedPoints();
+        this.totalDiscount = calculateTotalDiscount();
+    }
+
+    private void validArgumentCheck(List<InvoiceLineItem> lineItems, Boolean isEmployee) {
+        if (lineItems==null || isEmployee == null){
+            throw new DomainRuntimeException("Total can not be calculated with current arguments");
+        }
+    }
+
+    private void checkNegative(double result) throws InvalidResultException {
+        if (result <=0){
+            throw new InvalidResultException("Value should not be negative");
+        }
+    }
+
+    private Double getEmployeeDiscountFromFile() {
+        String parameter = "employeeDiscount";
+        configReader.loadConfig("config.properties", parameter);
+        double employeeDiscount = configReader.getParameterValue();
+        checkNegative(employeeDiscount);
+        checkPCT(employeeDiscount);
+        return employeeDiscount;
+
+    }
+
+    private void checkPCT(double employeeDiscount) {
+        if(employeeDiscount>=1){
+            throw new DomainRuntimeException("Employee discount can not be greater than 1 (100%)");
+        }
+    }
+
+    private Double calculateTotalDiscount() {
+        Double reduce = lineItems.stream().map(InvoiceLineItem::getDiscount).reduce(0D, Double::sum);
+        checkNegative(reduce);
+        if (isEmployee) {
+            return reduce + (totalToPay * employeeDiscount);
+        }
+        return reduce;
     }
 
     private Double calculateTotalAccumulatedPoints() {
         Double reduce = lineItems.stream().map(InvoiceLineItem::getPoints).reduce(0D, Double::sum);
+        checkNegative(reduce);
         return reduce;
     }
 
     private Double calculateTotalToPay() {
         Double reduce = lineItems.stream().map(InvoiceLineItem::getSubtotal).reduce(0D, Double::sum);
+        checkNegative(reduce);
         if (isEmployee) {
-            return reduce * (1 - 0.05);
+            return reduce * (1 - employeeDiscount);
         }
         return reduce;
     }
 
     private Double calculateTotalTaxes() {
         Double reduce = lineItems.stream().map(InvoiceLineItem::getTaxes).reduce(0D, Double::sum);
+        checkNegative(reduce);
         if (isEmployee) {
-            return reduce * (1 - 0.05);
+            return reduce * (1 - employeeDiscount);
         }
         return reduce;
     }
 
     private Integer calculateTotalQuantityProducts() {
         Integer reduce = lineItems.stream().map(InvoiceLineItem::getQuantity).reduce(0, Integer::sum);
+        checkNegative(reduce);
         return reduce;
     }
 

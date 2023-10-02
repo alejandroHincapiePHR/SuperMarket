@@ -12,28 +12,40 @@ import java.util.Objects;
 
 public final class Bill extends Domain {
 
-    private static long counter = 0;
-    private long billNumber;
+    private static Long counter = 0L;
+    private Long billNumber;
     private String issueDate;
     private Customer customer;
     private Employee employee;
     private List<InvoiceLineItem> lineItems;
     private TotalLineItem totalLineItem;
 
-    public Bill(int billNumber, Customer customer, Employee employee) {
+    private Boolean isClosed;
+
+    public Bill(Customer customer, Employee employee) {
         super();
+        argumentCheck(customer, employee);
         this.id = ++counter;
         this.billNumber = id + 10;
         this.customer = customer;
         this.employee = employee;
         this.issueDate = setIssueDate();
         this.lineItems = new ArrayList<>();
+        this.isClosed = false;
     }
 
+    private static void argumentCheck(Customer customer, Employee employee) {
+        if (customer == null || employee == null) {
+            throw new IllegalArgumentException("Data arguments are not valid");
+        }
+    }
 
-    public void confirmBillAndGetTotalLineItem(Boolean isEmployee){
+    public void confirmBillAndGetTotalLineItem(Boolean isEmployee) {
+        if (isEmployee == null) {
+            throw new IllegalArgumentException("Data arguments are not valid");
+        }
+        isClosed = true;
         totalLineItem = new TotalLineItem(lineItems, isEmployee);
-
 
     }
 
@@ -87,8 +99,13 @@ public final class Bill extends Domain {
         return lineItems;
     }
 
-    public void setLineItem(InvoiceLineItem lineItem) {
-        this.lineItems.add(lineItem);
+    public Boolean setLineItem(InvoiceLineItem lineItem) {
+        if (lineItem != null) {
+            this.lineItems.add(lineItem);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

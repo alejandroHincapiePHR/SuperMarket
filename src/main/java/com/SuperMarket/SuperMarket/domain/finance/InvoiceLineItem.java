@@ -1,5 +1,7 @@
 package com.SuperMarket.SuperMarket.domain.finance;
 
+import com.SuperMarket.SuperMarket.domain.exception.DomainRuntimeException;
+import com.SuperMarket.SuperMarket.domain.exception.InvalidResultException;
 import com.SuperMarket.SuperMarket.domain.finance.discountLogic.configUtil.DiscountConfigReader;
 import com.SuperMarket.SuperMarket.domain.finance.util.ConfigReader;
 import com.SuperMarket.SuperMarket.domain.product.Product;
@@ -24,7 +26,10 @@ public final class InvoiceLineItem {
     private Double pointsPCT;
     private Double discountPCT;
 
-    public InvoiceLineItem(Product product, Integer quantity) {
+
+
+    public InvoiceLineItem(Product product, Integer quantity) throws InvalidResultException {
+        validateArguments(product, quantity);
         this.product = product;
         this.quantity = quantity;
         this.taxesPCT = getTaxesFromFile();
@@ -35,19 +40,49 @@ public final class InvoiceLineItem {
         this.discount = calculateSubTotalDiscount(product.getCustomerCost(), quantity);
         this.subtotal = calculateSubTotal(product.getCustomerCost(), quantity);
     }
-    private Double calculateSubTotal(Double customerCost, Integer quantity) {
-        return (customerCost+(taxes)-(discount))*quantity;
+
+    private static void validateArguments(Product product, Integer quantity) {
+        if(product == null || quantity <= 0 ){
+            throw new IllegalArgumentException("invalid arguments");
+        }
+        if(product.getProductType() == null){
+            throw new DomainRuntimeException("Product Type should not be null");
+        }
+        if(product.getCustomerCost() == null){
+            throw new DomainRuntimeException("Product customer cost should not be null");
+        }
+    }
+
+
+    private Double calculateSubTotal(Double customerCost, Integer quantity) throws InvalidResultException {
+        double result = (customerCost + (taxes) - (discount)) * quantity;
+        checkNegative(result);
+        return result;
 
     }
-    private Double calculateSubTotalDiscount(Double customerCost, Integer quantity) {
-        return customerCost*discountPCT*quantity;
-    }
-    private Double calculateSubTotalTaxes(Double customerCost, Integer quantity) {
-        return customerCost*taxesPCT*quantity;
+
+    private void checkNegative(double result) throws InvalidResultException {
+        if (result <=0){
+            throw new InvalidResultException("Value should not be negative");
+        }
     }
 
-    private Double calculateSubTotalPoints(Double customerCost, Integer quantity) {
-        return customerCost*pointsPCT*quantity;
+    private Double calculateSubTotalDiscount(Double customerCost, Integer quantity) throws InvalidResultException {
+        double result = customerCost * discountPCT * quantity;
+        checkNegative(result);
+        return result;
+    }
+    private Double calculateSubTotalTaxes(Double customerCost, Integer quantity) throws InvalidResultException {
+        double result = customerCost * taxesPCT * quantity;
+        checkNegative(result);
+        return result;
+    }
+
+    private Double calculateSubTotalPoints(Double customerCost, Integer quantity) throws InvalidResultException {
+
+        double result = customerCost * pointsPCT * quantity;
+        checkNegative(result);
+        return result;
     }
 
     private Double getDiscountFromFile(ProductType productType) {
