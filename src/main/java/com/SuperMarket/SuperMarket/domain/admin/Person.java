@@ -5,7 +5,7 @@ import com.SuperMarket.SuperMarket.domain.base.Domain;
 
 import java.util.Objects;
 
-public sealed class Person extends Domain permits Customer, Employee {
+public class Person extends Domain {
     private String firstName;
     private String lastName;
     private Identification identification;
@@ -16,11 +16,10 @@ public sealed class Person extends Domain permits Customer, Employee {
         super();
     }
 
-    public Person(String firstName, String lastName, Identification identification, String email, String telefonNumber) {
+    public Person(String firstName, String lastName, String email, String telefonNumber) {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
-        this.identification = identification;
         this.email = email;
         this.telefonNumber = telefonNumber;
     }

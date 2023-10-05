@@ -32,12 +32,12 @@ public final class InvoiceLineItem {
         validateArguments(product, quantity);
         this.product = product;
         this.quantity = quantity;
-        this.taxesPCT = getTaxesFromFile();
-        this.pointsPCT = getPointsFromFile();
-        this.discountPCT = getDiscountFromFile(product.getProductType());
-        this.points = calculateSubTotalPoints(product.getCustomerCost(), quantity);
-        this.taxes = calculateSubTotalTaxes(product.getCustomerCost(), quantity);
-        this.discount = calculateSubTotalDiscount(product.getCustomerCost(), quantity);
+        this.taxesPCT = 0.15D; //getTaxesFromFile();
+        this.pointsPCT = 0.1D; //getPointsFromFile();
+        this.discountPCT = 0.05D ; //getDiscountFromFile(product.getProductType());
+        this.points = calculateSubTotalPoints(product.getCustomerCost());
+        this.taxes = calculateSubTotalTaxes(product.getCustomerCost());
+        this.discount = calculateSubTotalDiscount(product.getCustomerCost());
         this.subtotal = calculateSubTotal(product.getCustomerCost(), quantity);
     }
 
@@ -62,30 +62,30 @@ public final class InvoiceLineItem {
     }
 
     private void checkNegative(double result) throws InvalidResultException {
-        if (result <=0){
-            throw new InvalidResultException("Value should not be negative");
+        if (result <0){
+            throw new InvalidResultException("Value should not be negative (InvoiceLineItem Domain class)");
         }
     }
 
-    private Double calculateSubTotalDiscount(Double customerCost, Integer quantity) throws InvalidResultException {
-        double result = customerCost * discountPCT * quantity;
+    private Double calculateSubTotalDiscount(Double customerCost) throws InvalidResultException {
+        double result = customerCost * discountPCT;
         checkNegative(result);
         return result;
     }
-    private Double calculateSubTotalTaxes(Double customerCost, Integer quantity) throws InvalidResultException {
-        double result = customerCost * taxesPCT * quantity;
-        checkNegative(result);
-        return result;
-    }
-
-    private Double calculateSubTotalPoints(Double customerCost, Integer quantity) throws InvalidResultException {
-
-        double result = customerCost * pointsPCT * quantity;
+    private Double calculateSubTotalTaxes(Double customerCost) throws InvalidResultException {
+        double result = customerCost * taxesPCT;
         checkNegative(result);
         return result;
     }
 
-    private Double getDiscountFromFile(ProductType productType) {
+    private Double calculateSubTotalPoints(Double customerCost) throws InvalidResultException {
+
+        double result = customerCost * pointsPCT;
+        checkNegative(result);
+        return result;
+    }
+
+   /* private Double getDiscountFromFile(ProductType productType) {
         String[] chainValues = discountConfigReader.loadConfig("discount.properties", productType.toString());
         if (chainValues[0] == getDayInUpperCase()){
             return Double.parseDouble(chainValues[1]);
@@ -93,7 +93,7 @@ public final class InvoiceLineItem {
         else {
             return 0D;
         }
-    }
+    }*/
 
     private String getDayInUpperCase() {
         LocalDate currentDate = LocalDate.now();
@@ -102,19 +102,19 @@ public final class InvoiceLineItem {
         return dayInUpperCase;
     }
 
-    private double getTaxesFromFile() {
+  /*  private double getTaxesFromFile() {
         String parameter = "taxes";
         configReader.loadConfig("config.properties", parameter);
         double taxes = configReader.getParameterValue();
         return taxesPCT;
-    }
+    }*/
 
-    private double getPointsFromFile() {
+    /*private double getPointsFromFile() {
         String parameter = "points";
         configReader.loadConfig("config.properties", parameter);
         double points = configReader.getParameterValue();
         return pointsPCT;
-    }
+    }*/
 
     public Product getProduct() {
         return product;
@@ -155,15 +155,11 @@ public final class InvoiceLineItem {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("InvoiceLineItem{");
-        sb.append("product=").append(product);
-        sb.append(", quantity=").append(quantity);
+        sb.append("product=").append(product.getProductName());
         sb.append(", taxes=").append(taxes);
         sb.append(", discount=").append(discount);
         sb.append(", subtotal=").append(subtotal);
         sb.append(", points=").append(points);
-        sb.append(", taxesPCT=").append(taxesPCT);
-        sb.append(", pointsPCT=").append(pointsPCT);
-        sb.append(", discountPCT=").append(discountPCT);
         sb.append('}');
         return sb.toString();
     }

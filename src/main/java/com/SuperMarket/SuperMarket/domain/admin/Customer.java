@@ -6,7 +6,7 @@ import com.SuperMarket.SuperMarket.domain.finance.Bill;
 import java.util.ArrayList;
 import java.util.List;
 
-public non-sealed class Customer extends Person {
+public class Customer extends Person {
 
     private boolean isEmployee;
 
@@ -18,8 +18,8 @@ public non-sealed class Customer extends Person {
         super();
     }
 
-    public Customer(String firstName, String lastName, Identification identification, String email, String telefonNumber) {
-        super(firstName, lastName, identification, email, telefonNumber);
+    public Customer(String firstName, String lastName, String email, String telefonNumber) {
+        super(firstName, lastName, email, telefonNumber);
         this.points = 0;
         this.clientBills = new ArrayList<>();
         this.isEmployee = false;

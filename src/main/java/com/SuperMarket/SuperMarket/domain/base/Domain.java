@@ -12,6 +12,12 @@ public abstract class Domain {
         this.stateEnum = StateEnum.ACTIVE;
     }
 
+    public Domain(Long id) {
+        super();
+        this.id = id;
+        this.stateEnum = StateEnum.ACTIVE;
+    }
+
     public Long getId() {
         return id;
     }

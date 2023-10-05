@@ -23,7 +23,7 @@ public final class TotalLineItem {
         validArgumentCheck(lineItems, isEmployee);
         this.lineItems = lineItems;
         this.isEmployee = isEmployee;
-        this.employeeDiscount = getEmployeeDiscountFromFile();
+        this.employeeDiscount = 0D; //getEmployeeDiscountFromFile();
         this.totalQuantityProducts = calculateTotalQuantityProducts();
         this.totalTaxes = calculateTotalTaxes();
         this.totalToPay = calculateTotalToPay();
@@ -38,12 +38,12 @@ public final class TotalLineItem {
     }
 
     private void checkNegative(double result) throws InvalidResultException {
-        if (result <=0){
-            throw new InvalidResultException("Value should not be negative");
+        if (result <0){
+            throw new InvalidResultException("Value should not be negative in Total Line Item Domain Class");
         }
     }
 
-    private Double getEmployeeDiscountFromFile() {
+    /*private Double getEmployeeDiscountFromFile() {
         String parameter = "employeeDiscount";
         configReader.loadConfig("config.properties", parameter);
         double employeeDiscount = configReader.getParameterValue();
@@ -51,7 +51,7 @@ public final class TotalLineItem {
         checkPCT(employeeDiscount);
         return employeeDiscount;
 
-    }
+    }*/
 
     private void checkPCT(double employeeDiscount) {
         if(employeeDiscount>=1){
@@ -152,8 +152,6 @@ public final class TotalLineItem {
         sb.append(", totalTaxes=").append(totalTaxes);
         sb.append(", totalToPay=").append(totalToPay);
         sb.append(", totalAccumulatedPoints=").append(totalAccumulatedPoints);
-        sb.append(", lineItems=").append(lineItems);
-        sb.append(", isEmployee=").append(isEmployee);
         sb.append('}');
         return sb.toString();
     }

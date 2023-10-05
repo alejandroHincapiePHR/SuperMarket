@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigReader {
-    private double parameterValue;
+   /* private double parameterValue;
     public ConfigReader() {
     }
     public void loadConfig(String configFile, String parameter) {
@@ -22,5 +22,5 @@ public class ConfigReader {
         return parameterValue;
     }
 
-
+*/
 }

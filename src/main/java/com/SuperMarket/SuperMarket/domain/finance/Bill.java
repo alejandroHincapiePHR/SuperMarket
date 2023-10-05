@@ -3,35 +3,32 @@ package com.SuperMarket.SuperMarket.domain.finance;
 import com.SuperMarket.SuperMarket.domain.admin.Customer;
 import com.SuperMarket.SuperMarket.domain.admin.Employee;
 import com.SuperMarket.SuperMarket.domain.base.Domain;
+import com.SuperMarket.SuperMarket.domain.product.Product;
+import com.SuperMarket.SuperMarket.domain.product.ProductType;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public final class Bill extends Domain {
-
-    private static Long counter = 0L;
-    private Long billNumber;
-    private String issueDate;
+    private Date issueDate;
     private Customer customer;
     private Employee employee;
     private List<InvoiceLineItem> lineItems;
     private TotalLineItem totalLineItem;
-
     private Boolean isClosed;
 
-    public Bill(Customer customer, Employee employee) {
-        super();
+    public Bill(Customer customer, Employee employee, Long id) {
+        super(id);
         argumentCheck(customer, employee);
-        this.id = ++counter;
-        this.billNumber = id + 10;
         this.customer = customer;
         this.employee = employee;
         this.issueDate = setIssueDate();
         this.lineItems = new ArrayList<>();
         this.isClosed = false;
+
     }
 
     private static void argumentCheck(Customer customer, Employee employee) {
@@ -49,33 +46,25 @@ public final class Bill extends Domain {
 
     }
 
-    private String setIssueDate() {
+
+    public TotalLineItem getTotalLineItem() {
+        return totalLineItem;
+    }
+
+    public void setTotalLineItem(TotalLineItem totalLineItem) {
+        this.totalLineItem = totalLineItem;
+    }
+
+    private Date setIssueDate() {
         LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return currentDate.format(dateTimeFormatter);
+        return java.sql.Date.valueOf(currentDate);
     }
 
-    public static long getCounter() {
-        return counter;
-    }
-
-    public static void setCounter(long counter) {
-        Bill.counter = counter;
-    }
-
-    public long getBillNumber() {
-        return billNumber;
-    }
-
-    public void setBillNumber(long billNumber) {
-        this.billNumber = billNumber;
-    }
-
-    public String getIssueDate() {
+    public Date getIssueDate() {
         return issueDate;
     }
 
-    public void setIssueDate(String issueDate) {
+    public void setIssueDate(Date issueDate) {
         this.issueDate = issueDate;
     }
 
@@ -96,7 +85,12 @@ public final class Bill extends Domain {
     }
 
     public List<InvoiceLineItem> getLineItems() {
-        return lineItems;
+        if (lineItems == null) {
+            return null;
+        } else {
+
+            return lineItems;
+        }
     }
 
     public Boolean setLineItem(InvoiceLineItem lineItem) {
@@ -108,29 +102,29 @@ public final class Bill extends Domain {
         }
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Bill bill)) return false;
         if (!super.equals(o)) return false;
-        return billNumber == bill.billNumber && Objects.equals(issueDate, bill.issueDate);
+        return Objects.equals(issueDate, bill.issueDate) && Objects.equals(customer, bill.customer) && Objects.equals(employee, bill.employee);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), billNumber, issueDate);
+        return Objects.hash(super.hashCode(), issueDate, customer, employee);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Bill{");
-        sb.append("billNumber=").append(billNumber);
-        sb.append(", issueDate=").append(issueDate);
-        sb.append(", customer=").append(customer);
-        sb.append(", employee=").append(employee);
-        sb.append(", lineItems=").append(lineItems);
-        sb.append(", id=").append(id);
-        sb.append(", stateEnum=").append(stateEnum);
+        sb.append("issueDate=").append(issueDate);
+        sb.append(", customer name =").append(customer.getFirstName());
+        sb.append(", employee name =").append(employee.getFirstName());
+        sb.append(", lineItems=").append(lineItems.toString());
+        sb.append(", totalLineItem=").append(totalLineItem.toString());
+        sb.append(", isClosed=").append(isClosed);
         sb.append('}');
         return sb.toString();
     }
