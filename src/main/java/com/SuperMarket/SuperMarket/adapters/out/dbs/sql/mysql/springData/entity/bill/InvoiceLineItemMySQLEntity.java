@@ -3,8 +3,6 @@ import com.SuperMarket.SuperMarket.adapters.out.dbs.sql.mysql.springData.entity.
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

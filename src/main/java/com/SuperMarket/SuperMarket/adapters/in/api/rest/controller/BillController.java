@@ -33,16 +33,25 @@ public class BillController {
     }
 
 
+    //TODO Incluir SWAGER
     @PostMapping("/{idCustomer}/{idEmployee}")
     public ResponseEntity<String> createBill(@PathVariable(name = "idCustomer") Integer idCustomer,
                                                      @PathVariable(name = "idEmployee") Integer idEmployee,
                                             @RequestBody AddProductRequest addProductRequest) {
+
         Customer customer = customerService.customerById(idCustomer.longValue());
         Employee employee = employeeService.employeeById(idEmployee.longValue());
+
         Bill bill = billService.billInitialization(customer, employee);
+
+
+        //TODO refactorizar hacia el servicio
         addProductRequest.getSKUs().stream().map(x->productService.getProductBySku(x))
                 .forEach(x->bill.setLineItem(new InvoiceLineItem(x,1)));
+
         billService.billConfirmation(bill);
+
+
         return ResponseEntity.status(HttpStatus.CREATED).body(bill.toString());
     }
 
