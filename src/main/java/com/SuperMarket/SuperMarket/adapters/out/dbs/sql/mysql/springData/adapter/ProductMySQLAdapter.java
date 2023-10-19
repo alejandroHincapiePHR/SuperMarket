@@ -1,12 +1,15 @@
 package com.SuperMarket.SuperMarket.adapters.out.dbs.sql.mysql.springData.adapter;
 
+import com.SuperMarket.SuperMarket.adapters.out.dbs.sql.mysql.springData.entity.product.ProductMySQLEntity;
 import com.SuperMarket.SuperMarket.adapters.out.dbs.sql.mysql.springData.mappers.products.ProductMapper;
 import com.SuperMarket.SuperMarket.adapters.out.dbs.sql.mysql.springData.repository.product.ProductMySQLRepository;
-import com.SuperMarket.SuperMarket.application.ports.product.out.ProductConsultPort;
+import com.SuperMarket.SuperMarket.application.ports.product.out.GetProductBySkuPort;
 import com.SuperMarket.SuperMarket.application.ports.product.out.ProductCreatedPort;
 import com.SuperMarket.SuperMarket.domain.product.Product;
 
-public class ProductMySQLAdapter implements ProductConsultPort, ProductCreatedPort {
+import java.util.Optional;
+
+public class ProductMySQLAdapter implements GetProductBySkuPort, ProductCreatedPort {
 
     private ProductMySQLRepository productMySQLRepository;
     private ProductMapper productMapper;
@@ -18,8 +21,14 @@ public class ProductMySQLAdapter implements ProductConsultPort, ProductCreatedPo
     }
 
     @Override
-    public Product getProductBySKU(String SKU) {
-        return productMapper.toDomain(productMySQLRepository.findBySKU(SKU));
+    public Optional<Product> getProductBySKU(String SKU) {
+        Optional<ProductMySQLEntity> productOptional = productMySQLRepository.findBySKU(SKU);
+        if(productOptional.isEmpty()) {
+            return Optional.empty();
+        }
+            else {
+            return Optional.of(productMapper.toDomain(productOptional.get()));
+        }
     }
 
     @Override

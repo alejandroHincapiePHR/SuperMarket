@@ -21,13 +21,13 @@ public class CustomerMySQLAdapter implements CustomerByIdPort {
 
 
     @Override
-    public Customer getCustomerById(Long id) {
+    public Optional<Customer> getCustomerById(Long id) {
         Optional<CustomerMySQLEntity> customerEntity = customerMySQLRepository.findById(id);
-
         if (customerEntity.isPresent()) {
-            return customerMapper.toDomain(customerEntity.get());
+            Customer customerDomain = customerMapper.toDomain(customerEntity.get());
+            return Optional.of(customerDomain);
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 }

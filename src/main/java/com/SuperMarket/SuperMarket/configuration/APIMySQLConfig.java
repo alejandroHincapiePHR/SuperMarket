@@ -25,7 +25,7 @@ import com.SuperMarket.SuperMarket.application.ports.admin.customer.out.Customer
 import com.SuperMarket.SuperMarket.application.ports.admin.employe.out.EmployeeByIDPort;
 import com.SuperMarket.SuperMarket.application.ports.bill.out.BillCreatedPort;
 import com.SuperMarket.SuperMarket.application.ports.bill.out.GetBillByIDPort;
-import com.SuperMarket.SuperMarket.application.ports.product.out.ProductConsultPort;
+import com.SuperMarket.SuperMarket.application.ports.product.out.GetProductBySkuPort;
 import com.SuperMarket.SuperMarket.application.ports.product.out.ProductCreatedPort;
 import com.SuperMarket.SuperMarket.application.service.BillService;
 import com.SuperMarket.SuperMarket.application.service.CustomerService;
@@ -101,9 +101,8 @@ public class APIMySQLConfig {
 
     //Services
     @Bean
-    BillService billService(BillCreatedPort billCreatedPort, ProductConsultPort productConsultPort,
-                            GetBillByIDPort getBillByIDPort) {
-        return new BillService(billCreatedPort, productConsultPort, getBillByIDPort);
+    BillService billService(BillCreatedPort billCreatedPort,GetBillByIDPort getBillByIDPort) {
+        return new BillService(billCreatedPort, getBillByIDPort);
     }
 
     @Bean
@@ -118,7 +117,7 @@ public class APIMySQLConfig {
 
     @Bean
     ProductService productService(ProductCreatedPort productCreatedPort,
-                                  ProductConsultPort productConsultPort) {
+                                  GetProductBySkuPort productConsultPort) {
         return new ProductService(productCreatedPort, productConsultPort);
     }
 

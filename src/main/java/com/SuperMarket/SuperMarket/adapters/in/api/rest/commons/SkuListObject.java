@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class AddProductRequest {
-    private List<String> SKUs;
+public class SkuListObject {
+    private List<String> skuList;
 
 }
