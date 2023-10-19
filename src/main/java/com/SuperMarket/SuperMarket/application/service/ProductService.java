@@ -1,23 +1,27 @@
 package com.SuperMarket.SuperMarket.application.service;
 
-import com.SuperMarket.SuperMarket.application.ports.product.in.ProductCreation;
-import com.SuperMarket.SuperMarket.application.ports.product.in.ProductInformation;
-import com.SuperMarket.SuperMarket.application.ports.product.out.ProductConsultPort;
+import com.SuperMarket.SuperMarket.application.exceptions.ProductNotFoundException;
+import com.SuperMarket.SuperMarket.application.ports.product.in.ProductCreationUseCase;
+import com.SuperMarket.SuperMarket.application.ports.product.in.GetProductBySkuUseCase;
+import com.SuperMarket.SuperMarket.application.ports.product.in.SkuListToProductListUseCase;
+import com.SuperMarket.SuperMarket.application.ports.product.out.GetProductBySkuPort;
 import com.SuperMarket.SuperMarket.application.ports.product.out.ProductCreatedPort;
 import com.SuperMarket.SuperMarket.domain.product.Product;
 import com.SuperMarket.SuperMarket.domain.product.ProductType;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
-public class ProductService implements ProductCreation, ProductInformation {
+public class ProductService implements ProductCreationUseCase, GetProductBySkuUseCase, SkuListToProductListUseCase {
 
     private ProductCreatedPort productCreatedPort;
-    private ProductConsultPort productConsultPort;
+    private GetProductBySkuPort getProductBySkuPort;
 
 
     public ProductService(ProductCreatedPort productCreatedPort,
-                          ProductConsultPort productConsultPort ) {
+                          GetProductBySkuPort getProductBySkuPort) {
         this.productCreatedPort = productCreatedPort;
-        this.productConsultPort = productConsultPort;
+        this.getProductBySkuPort = getProductBySkuPort;
     }
 
     @Override
@@ -31,8 +35,18 @@ public class ProductService implements ProductCreation, ProductInformation {
     }
 
     @Override
-    public Product getProductBySku(String SKU) {
-        Product product = productConsultPort.getProductBySKU(SKU);
-        return product;
+    public Optional<Product> getProductBySku(String SKU) {
+        return getProductBySkuPort.getProductBySKU(SKU);
+    }
+
+    @Override
+    public List<Product> skuListToProductList(List<String> skuList) throws ProductNotFoundException {
+       List<Optional<Product>> productListOptional= skuList.stream().map(x->getProductBySkuPort.getProductBySKU(x)).toList();
+       productListOptional.stream().forEach(x->{
+            if(x.isEmpty()){
+                throw new ProductNotFoundException();
+            }
+        });
+       return productListOptional.stream().map(x->x.get()).toList();
     }
 }

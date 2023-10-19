@@ -20,14 +20,14 @@ public class EmployeeMySQLAdapter implements EmployeeByIDPort {
     }
 
     @Override
-    public Employee getEmployeeById(Long id) {
+    public Optional<Employee> getEmployeeById(Long id) {
         Optional<EmployeeMySQLEntity> employeeMySQL = employeeMySQLRepository.findById(id);
-
         if(employeeMySQL.isPresent()){
-            return employeeMapper.toDomain(employeeMySQL.get());
+            Employee employeeDomain = employeeMapper.toDomain(employeeMySQL.get());
+            return Optional.of(employeeDomain);
         }
         else {
-            return null;
+            return Optional.empty();
         }
     }
 }
