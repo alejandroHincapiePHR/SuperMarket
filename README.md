@@ -1,6 +1,6 @@
 # Supermarket Application
 
-This is a Supermarket application built in Java using the Spring framework, Lombok, and MySQL database, with a Hexagonal architecture. 
+This is a Supermarket application built in Java using the Spring framework, with a Hexagonal architecture, currently adding functionalities. 
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -89,4 +89,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-We hope this README helps you understand the structure and rationale behind this Supermarket application. If you have any questions or would like to contribute, please feel free to get in touch.
+
